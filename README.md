@@ -1,17 +1,19 @@
-# LayoutGuard
+# 🔍 LayoutGuard
 
 LayoutGuard is a command-line interface (CLI) tool designed to automate visual regression testing for web applications. It uses Playwright to drive a browser, execute user-defined scenarios, take screenshots, and compare them against previously approved "golden" snapshots.
 
-## Features
+> 🤖 **Note**: This project was entirely generated using the Qwen3-Coder-Plus model, showcasing the capabilities of AI in software development.
 
-- **Scenario-based Testing**: Define test scenarios in simple TypeScript files.
-- **Centralized Snapshot Management**: Manage all artifacts in a root `.layoutguard` directory.
-- **Interactive Approval Workflow**: Review and approve new or changed snapshots.
-- **CI/CD Integration**: Exits with a non-zero status code if visual differences are detected.
-- **Flexible Targeting**: Specify which element to capture in a screenshot.
-- **Immediate Diff Viewing**: Automatically open a visual diff image when a test fails.
+## 🌟 Features
 
-## Installation
+- **_scenario-based Testing**: Define test scenarios in simple TypeScript files.
+- **📁 Centralized Snapshot Management**: Manage all artifacts in a root `.layoutguard` directory.
+- **✅ Interactive Approval Workflow**: Review and approve new or changed snapshots.
+- **🤖 CI/CD Integration**: Exits with a non-zero status code if visual differences are detected.
+- **🎯 Flexible Targeting**: Specify which element to capture in a screenshot.
+- **🖼️ Immediate Diff Viewing**: Automatically open a visual diff image when a test fails.
+
+## 🚀 Installation
 
 ```bash
 npm install -g layoutguard
@@ -37,9 +39,9 @@ You can also install specific versions or channels:
 npx playwright install chromium@beta
 ```
 
-## Usage
+## 📖 Usage
 
-### Initialize a new project
+### 🆕 Initialize a new project
 
 ```bash
 layoutguard init
@@ -59,7 +61,7 @@ npx playwright install firefox   # For Firefox
 npx playwright install webkit    # For Safari
 ```
 
-### Configuration
+### ⚙️ Configuration
 
 The `layoutguard.config.json` file allows you to customize behavior:
 
@@ -79,7 +81,7 @@ The `layoutguard.config.json` file allows you to customize behavior:
 - `playwright.browserName`: Which browser to use (chromium, firefox, or webkit).
 - `diffThreshold`: Threshold for pixel difference (0 to 1). 0 means zero tolerance.
 
-### Writing Tests
+### ✍️ Writing Tests
 
 Test scenarios are defined in `.spec.ts` files. Each file exports a default object that conforms to the `LayoutTest` interface:
 
@@ -105,7 +107,7 @@ export default test;
 - `scenario`: The sequence of actions to perform before taking the screenshot.
 - `selector`: Optional. A CSS selector for the element to capture. If omitted, the full page is captured.
 
-### Running Tests
+### ▶️ Running Tests
 
 ```bash
 layoutguard check [test-name]
@@ -116,7 +118,7 @@ This command executes visual regression tests:
 - If `[test-name]` is omitted, layoutguard will run all tests found.
 - Use the `--show-diff` option to automatically open the visual diff image if a test fails.
 
-### Approving Snapshots
+### ✅ Approving Snapshots
 
 ```bash
 layoutguard approve [test-name]
@@ -126,7 +128,7 @@ This command runs the specified test(s) and replaces the existing golden snapsho
 
 - If `[test-name]` is omitted, it will update snapshots for all found tests.
 
-## Directory Structure
+## 📁 Directory Structure
 
 ```
 my-awesome-project/
@@ -150,6 +152,6 @@ my-awesome-project/
 └── tsconfig.json
 ```
 
-## License
+## 📄 License
 
 MIT
