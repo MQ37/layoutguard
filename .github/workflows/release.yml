@@ -1,0 +1,82 @@
+name: Create release
+
+on:
+  workflow_dispatch: # Manual trigger
+    inputs:
+      version:
+        description: 'Release version (e.g., v0.0.1)'
+        required: true
+      prerelease:
+        description: 'Is this a prerelease?'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Run tests
+      - name: Test
+        run: npm run test
+
+      # Build the project
+      - name: Build
+        run: npm run build
+
+      # Create binary executable
+      - name: Make binary executable
+        run: chmod +x ./dist/index.js
+
+      # Create directory structure for packaging
+      - name: Create package directory
+        run: |
+          mkdir -p package
+          cp -r dist package/
+          cp package.json package/
+          cp README.md package/
+
+      # Package with package/ prefix as tarball
+      - name: Package as tarball
+        run: tar -czf layoutguard-${{ github.event.inputs.version }}.tar.gz package
+
+      # Package with package/ prefix as zip
+      - name: Package as zip
+        run: zip -r layoutguard-${{ github.event.inputs.version }}.zip package
+
+      # Create GitHub release
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: LayoutGuard ${{ github.event.inputs.version }}
+          body: |
+            ## LayoutGuard ${{ github.event.inputs.version }}
+
+            ### Installation
+
+            ```bash
+            # Install directly from GitHub release
+            npm install -g https://github.com/mq37/layoutguard/releases/download/${{ github.event.inputs.version }}/layoutguard-${{ github.event.inputs.version }}.tar.gz
+            ```
+          draft: false
+          prerelease: ${{ github.event.inputs.prerelease }}
+          files: |
+            layoutguard-${{ github.event.inputs.version }}.tar.gz
+            layoutguard-${{ github.event.inputs.version }}.zip

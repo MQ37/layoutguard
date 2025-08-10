@@ -1,10 +1,10 @@
 {
   "name": "layoutguard",
-  "version": "10.0.0",
+  "version": "0.0.1",
   "description": "CLI tool for visual regression testing",
   "main": "dist/index.js",
   "bin": {
-    "layout-guard": "dist/index.js"
+    "layoutguard": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
