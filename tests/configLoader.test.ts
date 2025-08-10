@@ -26,7 +26,7 @@ describe('configLoader', () => {
     vi.mocked(fs.existsSync).mockReturnValue(false);
 
     await expect(loadConfig()).rejects.toThrow(
-      'layout-guard.config.json not found. Please run `layout-guard init` first.'
+      'layoutguard.config.json not found. Please run `layoutguard init` first.'
     );
   });
 

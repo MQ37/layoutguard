@@ -3,15 +3,15 @@ import fs from 'fs';
 import { Config } from '../types/config';
 
 /**
- * Loads and parses the layout-guard.config.json file.
+ * Loads and parses the layoutguard.config.json file.
  * @returns The loaded configuration object.
  */
 export async function loadConfig(): Promise<Config> {
-  const configPath = path.join(process.cwd(), 'layout-guard.config.json');
+  const configPath = path.join(process.cwd(), 'layoutguard.config.json');
 
   if (!fs.existsSync(configPath)) {
     throw new Error(
-      'layout-guard.config.json not found. Please run `layout-guard init` first.'
+      'layoutguard.config.json not found. Please run `layoutguard init` first.'
     );
   }
 
@@ -50,6 +50,6 @@ export async function loadConfig(): Promise<Config> {
     return mergedConfig;
   } catch (error) {
     console.error('Error loading configuration:', error);
-    throw new Error('Failed to load layout-guard.config.json');
+    throw new Error('Failed to load layoutguard.config.json');
   }
 }

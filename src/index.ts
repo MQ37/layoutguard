@@ -8,13 +8,13 @@ import { approveAction } from './commands/approve';
 const program = new Command();
 
 program
-  .name('layout-guard')
+  .name('layoutguard')
   .description('CLI tool for visual regression testing')
   .version('1.0.0');
 
 program
   .command('init')
-  .description('Initialize layout-guard in the project')
+  .description('Initialize layoutguard in the project')
   .action(initAction);
 
 program

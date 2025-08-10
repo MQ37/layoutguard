@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 export const initAction = async () => {
-  console.log('Initializing layout-guard...');
+  console.log('Initializing layoutguard...');
 
   // 1. Create .layoutguard directory
   const layoutGuardDir = path.join(process.cwd(), '.layoutguard');
@@ -25,8 +25,8 @@ export const initAction = async () => {
     console.log('  Created .layoutguard/failures directory');
   }
 
-  // 3. Create default layout-guard.config.json
-  const configPath = path.join(process.cwd(), 'layout-guard.config.json');
+  // 3. Create default layoutguard.config.json
+  const configPath = path.join(process.cwd(), 'layoutguard.config.json');
   if (!fs.existsSync(configPath)) {
     const defaultConfig = {
       testMatch: ['examples/**/*.spec.js'],
@@ -37,7 +37,7 @@ export const initAction = async () => {
       diffThreshold: 0.01,
     };
     fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
-    console.log('  Created layout-guard.config.json');
+    console.log('  Created layoutguard.config.json');
   }
 
   // 4. Create examples directory and example test
@@ -65,7 +65,7 @@ module.exports = test;
   }
 
   console.log('Initialization complete!');
-  console.log('Please review and update layout-guard.config.json as needed.');
+  console.log('Please review and update layoutguard.config.json as needed.');
   console.log('');
   console.log('To use Playwright browsers, run one of the following commands:');
   console.log('  npx playwright install chromium  # For Chromium/Chrome');

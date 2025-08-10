@@ -2,7 +2,7 @@ LayoutGuard CLI - Technical Specification
 
 1. Overview
 
-layout-guard is a command-line interface (CLI) tool designed to automate visual regression testing for web applications. It uses Playwright to drive a browser, execute user-defined scenarios, take screenshots, and compare them against previously approved "golden" snapshots stored in a central .layoutguard directory.
+layoutguard is a command-line interface (CLI) tool designed to automate visual regression testing for web applications. It uses Playwright to drive a browser, execute user-defined scenarios, take screenshots, and compare them against previously approved "golden" snapshots stored in a central .layoutguard directory.
 
 The primary goal is to provide developers with a simple, configuration-driven way to catch unintended UI layout changes, preventing visual bugs from reaching production.
 2. Core Features
@@ -21,8 +21,8 @@ The primary goal is to provide developers with a simple, configuration-driven wa
 
 3. Command-Line Interface (CLI)
 
-The layout-guard tool will expose a few simple commands.
-layout-guard check [test-name]
+The layoutguard tool will expose a few simple commands.
+layoutguard check [test-name]
 
 This is the primary command for running tests.
 
@@ -30,7 +30,7 @@ This is the primary command for running tests.
 
     Arguments:
 
-        [test-name] (optional): The name of a specific test to run (e.g., "Dashboard Add Form Popup"). If omitted, layout-guard will run all tests found.
+        [test-name] (optional): The name of a specific test to run (e.g., "Dashboard Add Form Popup"). If omitted, layoutguard will run all tests found.
 
     Options:
 
@@ -52,7 +52,7 @@ This is the primary command for running tests.
 
         Exits with code 0 if all tests pass, 1 if any test fails.
 
-layout-guard approve [test-name]
+layoutguard approve [test-name]
 
 This command updates the golden snapshots.
 
@@ -70,15 +70,15 @@ This command updates the golden snapshots.
 
         Cleans up any corresponding failure reports from the .layoutguard/__failures__/ directory.
 
-layout-guard init
+layoutguard init
 
 This command initializes a new project.
 
-    Description: Sets up the necessary configuration and directory structure for layout-guard.
+    Description: Sets up the necessary configuration and directory structure for layoutguard.
 
     Behavior:
 
-        Creates a layout-guard.config.json file in the project root.
+        Creates a layoutguard.config.json file in the project root.
 
         Creates a .layoutguard directory.
 
@@ -141,11 +141,11 @@ my-awesome-project/
 ├── examples/
 │   └── example.spec.js  // Example test file
 ├── node_modules/
-├── layout-guard.config.json
+├── layoutguard.config.json
 ├── package.json
 └── README.md
 
-6. Configuration (layout-guard.config.json)
+6. Configuration (layoutguard.config.json)
 
 The configuration file allows users to customize behavior.
 

@@ -42,12 +42,12 @@ npx playwright install chromium@beta
 ### Initialize a new project
 
 ```bash
-layout-guard init
+layoutguard init
 ```
 
 This command sets up the necessary configuration and directory structure:
 
-- Creates a `layout-guard.config.json` file
+- Creates a `layoutguard.config.json` file
 - Creates a `.layoutguard` directory with `snapshots` and `failures` subdirectories
 - Creates an `examples` directory with an example test file
 
@@ -61,7 +61,7 @@ npx playwright install webkit    # For Safari
 
 ### Configuration
 
-The `layout-guard.config.json` file allows you to customize behavior:
+The `layoutguard.config.json` file allows you to customize behavior:
 
 ```json
 {
@@ -85,7 +85,7 @@ Test scenarios are defined in `.spec.ts` files. Each file exports a default obje
 
 ```typescript
 import { Page } from 'playwright';
-import type { LayoutTest } from 'layout-guard';
+import type { LayoutTest } from 'layoutguard';
 
 const test: LayoutTest = {
   name: 'Dashboard Add Form Popup',
@@ -108,18 +108,18 @@ export default test;
 ### Running Tests
 
 ```bash
-layout-guard check [test-name]
+layoutguard check [test-name]
 ```
 
 This command executes visual regression tests:
 
-- If `[test-name]` is omitted, layout-guard will run all tests found.
+- If `[test-name]` is omitted, layoutguard will run all tests found.
 - Use the `--show-diff` option to automatically open the visual diff image if a test fails.
 
 ### Approving Snapshots
 
 ```bash
-layout-guard approve [test-name]
+layoutguard approve [test-name]
 ```
 
 This command runs the specified test(s) and replaces the existing golden snapshots with the newly generated ones:
@@ -145,7 +145,7 @@ my-awesome-project/
 │       └── dashboard/
 │           ├── Dashboard.tsx
 │           └── dashboard.spec.ts  // Test file co-located with component
-├── layout-guard.config.json
+├── layoutguard.config.json
 ├── package.json
 └── tsconfig.json
 ```
