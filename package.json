@@ -1,0 +1,42 @@
+{
+  "name": "layoutguard",
+  "version": "10.0.0",
+  "description": "CLI tool for visual regression testing",
+  "main": "dist/index.js",
+  "bin": {
+    "layout-guard": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run"
+  },
+  "keywords": [
+    "visual regression",
+    "testing",
+    "playwright",
+    "cli"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
+    "@vitest/ui": "^2.1.8",
+    "glob": "^11.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "commander": "^13.1.0",
+    "open": "^8.4.0",
+    "pixelmatch": "^5.2.1",
+    "playwright": "^1.49.1"
+  }
+}
