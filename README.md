@@ -6,7 +6,7 @@ LayoutGuard is a command-line interface (CLI) tool designed to automate visual r
 
 ## 🌟 Features
 
-- **_scenario-based Testing**: Define test scenarios in simple TypeScript files.
+- **🎭 Scenario-based Testing**: Define test scenarios in simple TypeScript files.
 - **📁 Centralized Snapshot Management**: Manage all artifacts in a root `.layoutguard` directory.
 - **✅ Interactive Approval Workflow**: Review and approve new or changed snapshots.
 - **🤖 CI/CD Integration**: Exits with a non-zero status code if visual differences are detected.

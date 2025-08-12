@@ -4,9 +4,15 @@ import { discoverTests } from '../src/utils/testDiscovery';
 import { Config } from '../src/types/config';
 
 // Mock glob module
-vi.mock('glob', () => ({
-  glob: vi.fn(),
-}));
+vi.mock('glob', () => {
+  const fn = vi.fn();
+  return {
+    glob: fn,
+    // also export a sync variant that won't be used in these tests
+    globSync: vi.fn(),
+    default: { glob: fn },
+  };
+});
 
 describe('testDiscovery', () => {
   it('should discover test files based on config patterns', async () => {

@@ -1,16 +1,19 @@
 {
   "name": "layoutguard",
-  "version": "10.0.0",
+  "version": "0.0.2",
   "description": "🔍 CLI tool for visual regression testing with Playwright 🎭",
   "main": "dist/index.js",
   "bin": {
     "layoutguard": "dist/index.js"
   },
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
-    "test": "vitest",
+    "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "lint": "tsc --noEmit"
@@ -21,7 +24,15 @@
     "playwright",
     "cli"
   ],
-  "author": "Your Name",
+  "author": "MQ37",
+  "homepage": "https://github.com/MQ37/layoutguard",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MQ37/layoutguard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MQ37/layoutguard/issues"
+  },
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
@@ -29,12 +40,12 @@
     "@types/pixelmatch": "^5.2.6",
     "@types/pngjs": "^6.0.5",
     "@vitest/ui": "^2.1.8",
-    "glob": "^11.0.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"
   },
   "dependencies": {
+    "glob": "^11.0.1",
     "commander": "^13.1.0",
     "open": "^8.4.0",
     "pixelmatch": "^5.2.1",
