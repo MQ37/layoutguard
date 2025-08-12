@@ -21,12 +21,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Set up Node.js
+      # Set up Node.js (with npm registry for publishing)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
 
       # Install dependencies
       - name: Install dependencies
@@ -51,6 +52,19 @@ jobs:
           cp -r dist package/
           cp package.json package/
           cp README.md package/
+
+      # Publish to npm (uses repo secret NPM_TOKEN)
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.prerelease }}" = "true" ]; then
+            echo "Publishing prerelease to npm with tag 'next'..."
+            npm publish --provenance --access public --tag next
+          else
+            echo "Publishing to npm..."
+            npm publish --provenance --access public
+          fi
 
       # Package with package/ prefix as tarball
       - name: Package as tarball
