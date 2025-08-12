@@ -1,6 +1,6 @@
 {
   "name": "layoutguard",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "🔍 CLI tool for visual regression testing with Playwright 🎭",
   "main": "dist/index.js",
   "bin": {
