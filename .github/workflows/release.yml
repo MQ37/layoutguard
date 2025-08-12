@@ -40,8 +40,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Create binary executable
-      - name: Make binary executable
+      # Create executable
+      - name: Make executable
         run: chmod +x ./dist/index.js
 
       # Create directory structure for packaging

@@ -75,15 +75,10 @@ export const approveAction = async (testName?: string, options?: ApproveOptions)
         throw new Error(`Unsupported browser: ${browserName}`);
     }
     
-    // Create directories
+    // Ensure snapshots directory exists (approve writes baselines directly here)
     const snapshotDir = path.join(process.cwd(), '.layoutguard', 'snapshots');
-    const failureDir = path.join(process.cwd(), '.layoutguard', 'failures');
-    
     if (!fs.existsSync(snapshotDir)) {
       fs.mkdirSync(snapshotDir, { recursive: true });
-    }
-    if (!fs.existsSync(failureDir)) {
-      fs.mkdirSync(failureDir, { recursive: true });
     }
     
     // Create a new page context for each test
@@ -112,31 +107,23 @@ export const approveAction = async (testName?: string, options?: ApproveOptions)
         
         // Slugify the test name for the filename
         const slugifiedName = slugify(test.name);
-        const newScreenshotPath = path.join(failureDir, slugifiedName, 'new.png');
         const approvedScreenshotPath = path.join(snapshotDir, `${slugifiedName}.png`);
         
-        // Ensure failure directory for this test exists
-        const testFailureDir = path.join(failureDir, slugifiedName);
-        if (!fs.existsSync(testFailureDir)) {
-          fs.mkdirSync(testFailureDir, { recursive: true });
-        }
-        
-        // Take screenshot based on selector or full page
+        // Take screenshot based on selector or full page directly to snapshots
         if (test.selector) {
           const element = page.locator(test.selector);
-          await element.screenshot({ path: newScreenshotPath });
+          await element.screenshot({ path: approvedScreenshotPath });
         } else {
-          await page.screenshot({ path: newScreenshotPath });
+          await page.screenshot({ path: approvedScreenshotPath });
         }
         
-        console.log(`New screenshot saved to ${newScreenshotPath}`);
+        console.log(`Baseline screenshot saved to ${approvedScreenshotPath}`);
         
-        // Move the new screenshot to the snapshots directory
-        fs.copyFileSync(newScreenshotPath, approvedScreenshotPath);
-        console.log(`Approved screenshot saved to ${approvedScreenshotPath}`);
-        
-        // Clean up failure directory for this test
-        fs.rmSync(testFailureDir, { recursive: true, force: true });
+        // Clean up any legacy failure directory for this test (from previous checks)
+        const legacyFailureDir = path.join(process.cwd(), '.layoutguard', 'failures', slugifiedName);
+        if (fs.existsSync(legacyFailureDir)) {
+          fs.rmSync(legacyFailureDir, { recursive: true, force: true });
+        }
         
         console.log(`Test '${test.name}' approved`);
       } catch (error: any) {
