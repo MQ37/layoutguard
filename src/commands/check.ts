@@ -17,15 +17,19 @@ export const checkAction = async (testName?: string, options?: CheckOptions) => 
   
   let browser: Browser | null = null;
   let hasFailedTests = false;
+  let passedCount = 0;
+  let failedCount = 0;
+  const failedTests: string[] = [];
+  const symbols = { pass: '✅', fail: '❌', info: 'ℹ️' } as const;
   
   try {
     // Load configuration
     const config = await loadConfig();
-    console.log('Loaded configuration');
+    console.log(`${symbols.info} Loaded configuration`);
     
     // Discover tests
     const testFiles = await discoverTests(config);
-    console.log(`Discovered ${testFiles.length} test files`);
+  console.log(`${symbols.info} Discovered ${testFiles.length} test file(s)`);
     
     // Filter tests by name if testName is provided
     let testsToRun: { filePath: string; test: LayoutTest }[] = [];
@@ -59,11 +63,11 @@ export const checkAction = async (testName?: string, options?: CheckOptions) => 
       }
     }
     
-    console.log(`Running ${testsToRun.length} tests`);
+  console.log(`${symbols.info} Running ${testsToRun.length} test(s)`);
     
     // Launch browser based on config
     const browserName = config.playwright?.browserName || 'chromium';
-    console.log(`Launching ${browserName} browser...`);
+  console.log(`${symbols.info} Launching ${browserName} browser...`);
     
     switch (browserName) {
       case 'chromium':
@@ -92,7 +96,7 @@ export const checkAction = async (testName?: string, options?: CheckOptions) => 
     
     // Create a new page context for each test
     for (const { test } of testsToRun) {
-      console.log(`Running test: ${test.name}`);
+  console.log(`→ Running: ${test.name}`);
       
       const context = await browser.newContext();
       const page = await context.newPage();
@@ -134,13 +138,15 @@ export const checkAction = async (testName?: string, options?: CheckOptions) => 
           await page.screenshot({ path: newScreenshotPath });
         }
         
-        console.log(`New screenshot saved to ${newScreenshotPath}`);
+  console.log(`${symbols.info} New screenshot saved to ${newScreenshotPath}`);
         
         // Check if this is the first run (no original screenshot exists)
         if (!fs.existsSync(originalScreenshotPath)) {
-          console.log(`No original screenshot found for '${test.name}'. This appears to be the first run.`);
-          console.log(`Please run 'layout-guard approve "${test.name}"' to approve this screenshot as the baseline.`);
+          console.log(`${symbols.fail} No baseline found for '${test.name}' (first run).`);
+          console.log(`   Run: layout-guard approve "${test.name}" to set the baseline.`);
           hasFailedTests = true;
+          failedCount += 1;
+          failedTests.push(test.name);
           continue;
         }
         
@@ -160,30 +166,35 @@ export const checkAction = async (testName?: string, options?: CheckOptions) => 
         const mismatchRatio = mismatchedPixels / totalPixels;
         
         if (mismatchRatio > threshold) {
-          console.log(`Test '${test.name}' failed. Mismatch ratio: ${mismatchRatio.toFixed(4)} (threshold: ${threshold})`);
+          console.log(`${symbols.fail} '${test.name}' failed — mismatch: ${mismatchRatio.toFixed(4)} (threshold: ${threshold})`);
           hasFailedTests = true;
+          failedCount += 1;
+          failedTests.push(test.name);
           
           // Implement --show-diff option logic
           if (options?.showDiff) {
             try {
               const { default: open } = await import('open');
               await open(diffPath);
-              console.log(`Opened diff image: ${diffPath}`);
+              console.log(`${symbols.info} Opened diff image: ${diffPath}`);
             } catch (error: any) {
               console.error(`Failed to open diff image: ${error.message}`);
             }
           }
         } else {
-          console.log(`Test '${test.name}' passed. Mismatch ratio: ${mismatchRatio.toFixed(4)} (threshold: ${threshold})`);
+          console.log(`${symbols.pass} '${test.name}' passed — mismatch: ${mismatchRatio.toFixed(4)} (threshold: ${threshold})`);
+          passedCount += 1;
           
           // Clean up failure directory for this test if it passed
           fs.rmSync(testFailureDir, { recursive: true, force: true });
         }
         
-        console.log(`Test '${test.name}' completed`);
+        console.log(`   Completed: ${test.name}`);
       } catch (error: any) {
         console.error(`Error running test '${test.name}':`, error.message);
         hasFailedTests = true;
+        failedCount += 1;
+        failedTests.push(test.name);
       } finally {
         await context.close();
       }
@@ -194,12 +205,26 @@ export const checkAction = async (testName?: string, options?: CheckOptions) => 
       await browser.close();
     }
     
+    // Summary
+    const total = passedCount + failedCount || testsToRun.length;
+    console.log('');
+    console.log('Summary');
+    console.log('-------');
+    console.log(`${symbols.pass} Passed: ${passedCount}`);
+    console.log(`${symbols.fail} Failed: ${failedCount}`);
+    console.log(`${symbols.info} Total:  ${total}`);
+    if (failedCount > 0 && failedTests.length > 0) {
+      console.log('');
+      console.log('Failed tests:');
+      for (const name of failedTests) {
+        console.log(`  ${symbols.fail} ${name}`);
+      }
+    }
+
     // Implement exit code logic
     if (hasFailedTests) {
-      console.log('Some tests failed.');
       process.exit(1);
     } else {
-      console.log('All tests passed.');
       process.exit(0);
     }
   } catch (error: any) {
