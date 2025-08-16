@@ -44,7 +44,7 @@ npx playwright install chromium@beta
 ### 🆕 Initialize a new project
 
 ```bash
-layoutguard init
+npx layoutguard init
 ```
 
 This command sets up the necessary configuration and directory structure:
@@ -110,7 +110,7 @@ export default test;
 ### ▶️ Running Tests
 
 ```bash
-layoutguard check [test]
+npx layoutguard check [test]
 ```
 
 This command executes visual regression tests:
@@ -122,7 +122,7 @@ This command executes visual regression tests:
 ### ✅ Approving Snapshots
 
 ```bash
-layoutguard approve [test]
+npx layoutguard approve [test]
 ```
 
 This command runs the specified test(s) and replaces the existing golden snapshots with the newly generated ones:
