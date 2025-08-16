@@ -22,7 +22,7 @@ The primary goal is to provide developers with a simple, configuration-driven wa
 3. Command-Line Interface (CLI)
 
 The layoutguard tool will expose a few simple commands.
-layoutguard check [test-name]
+layoutguard check [test]
 
 This is the primary command for running tests.
 
@@ -30,7 +30,7 @@ This is the primary command for running tests.
 
     Arguments:
 
-        [test-name] (optional): The name of a specific test to run (e.g., "Dashboard Add Form Popup"). If omitted, layoutguard will run all tests found.
+  [test] (optional): Either the name of a specific test to run (e.g., "Dashboard Add Form Popup") or a path to a test file. If omitted, layoutguard will run all tests found.
 
     Options:
 
@@ -52,15 +52,15 @@ This is the primary command for running tests.
 
         Exits with code 0 if all tests pass, 1 if any test fails.
 
-layoutguard approve [test-name]
+layoutguard approve [test]
 
 This command updates the golden snapshots.
 
     Description: Runs the specified test(s) and replaces the existing golden snapshots with the newly generated ones.
 
-    Arguments:
+  Arguments:
 
-        [test-name] (optional): The name of a specific test to approve. If omitted, it will update snapshots for all found tests.
+    [test] (optional): Either the name of a specific test to approve or a path to a test file. If omitted, it will update snapshots for all found tests.
 
     Behavior:
 

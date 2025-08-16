@@ -12,8 +12,8 @@ interface CheckOptions {
   showDiff?: boolean;
 }
 
-export const checkAction = async (testName?: string, options?: CheckOptions) => {
-  console.log(`Running layout-guard check${testName ? ` for test: ${testName}` : ''}...`);
+export const checkAction = async (testArg?: string, options?: CheckOptions) => {
+  console.log(`Running layout-guard check${testArg ? ` for: ${testArg}` : ''}...`);
   
   let browser: Browser | null = null;
   let hasFailedTests = false;
@@ -31,25 +31,41 @@ export const checkAction = async (testName?: string, options?: CheckOptions) => 
     const testFiles = await discoverTests(config);
   console.log(`${symbols.info} Discovered ${testFiles.length} test file(s)`);
     
-    // Filter tests by name if testName is provided
+    // Filter tests by name or pick by file path
     let testsToRun: { filePath: string; test: LayoutTest }[] = [];
-    if (testName) {
-      // Find the specific test
-      for (const filePath of testFiles) {
-        try {
-          const test = await loadTest(filePath);
-          if (test.name === testName) {
-            testsToRun = [{ filePath, test }];
-            break;
-          }
-        } catch (error: any) {
-          console.error(`Error loading test from ${filePath}:`, error.message);
+    if (testArg) {
+      // If argument looks like a file path (absolute or relative path with separator or ends with .spec or .js/.ts), try to resolve it
+      const looksLikePath = /[\\/]/.test(testArg) || /\.(spec\.)?(js|ts|mjs|cjs)$/.test(testArg);
+      if (looksLikePath) {
+        const absPath = path.isAbsolute(testArg) ? testArg : path.join(process.cwd(), testArg);
+        if (!fs.existsSync(absPath)) {
+          console.error(`Test file not found: ${absPath}`);
+          process.exit(1);
         }
-      }
-      
-      if (testsToRun.length === 0) {
-        console.error(`Test '${testName}' not found.`);
-        process.exit(1);
+        try {
+          const test = await loadTest(absPath);
+          testsToRun = [{ filePath: absPath, test }];
+        } catch (error: any) {
+          console.error(`Error loading test from ${absPath}:`, error.message);
+          process.exit(1);
+        }
+      } else {
+        // Treat as test name; find matching test among discovered files
+        for (const filePath of testFiles) {
+          try {
+            const test = await loadTest(filePath);
+            if (test.name === testArg) {
+              testsToRun = [{ filePath, test }];
+              break;
+            }
+          } catch (error: any) {
+            console.error(`Error loading test from ${filePath}:`, error.message);
+          }
+        }
+        if (testsToRun.length === 0) {
+          console.error(`Test '${testArg}' not found.`);
+          process.exit(1);
+        }
       }
     } else {
       // Load all tests
@@ -143,7 +159,7 @@ export const checkAction = async (testName?: string, options?: CheckOptions) => 
         // Check if this is the first run (no original screenshot exists)
         if (!fs.existsSync(originalScreenshotPath)) {
           console.log(`${symbols.fail} No baseline found for '${test.name}' (first run).`);
-          console.log(`   Run: layout-guard approve "${test.name}" to set the baseline.`);
+          console.log(`   Run: layoutguard approve "${test.name}" to set the baseline.`);
           hasFailedTests = true;
           failedCount += 1;
           failedTests.push(test.name);

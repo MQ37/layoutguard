@@ -20,14 +20,14 @@ program
 program
   .command('check')
   .description('Run visual regression tests')
-  .argument('[test-name]', 'Name of a specific test to run')
+  .argument('[test]', 'Name of a specific test to run or a path to a test file')
   .option('--show-diff', 'Open the diff image if a test fails')
   .action((testName, options) => checkAction(testName, options));
 
 program
   .command('approve')
   .description('Approve new snapshots')
-  .argument('[test-name]', 'Name of a specific test to approve')
+  .argument('[test]', 'Name of a specific test to approve or a path to a test file')
   .action((testName, options) => approveAction(testName, options));
 
 program.parse();

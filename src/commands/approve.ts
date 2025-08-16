@@ -9,8 +9,8 @@ import { LayoutTest } from '../types/test';
 
 interface ApproveOptions {}
 
-export const approveAction = async (testName?: string, options?: ApproveOptions) => {
-  console.log(`Running layout-guard approve${testName ? ` for test: ${testName}` : ''}...`);
+export const approveAction = async (testArg?: string, options?: ApproveOptions) => {
+  console.log(`Running layout-guard approve${testArg ? ` for: ${testArg}` : ''}...`);
   
   let browser: Browser | null = null;
   
@@ -19,29 +19,45 @@ export const approveAction = async (testName?: string, options?: ApproveOptions)
     const config = await loadConfig();
     console.log('Loaded configuration');
     
-    // Discover tests
-    const testFiles = await discoverTests(config);
-    console.log(`Discovered ${testFiles.length} test files`);
+  // Discover tests
+  const testFiles = await discoverTests(config);
+  console.log(`Discovered ${testFiles.length} test files`);
     
-    // Filter tests by name if testName is provided
+    // Filter tests by name or pick by file path
     let testsToRun: { filePath: string; test: LayoutTest }[] = [];
-    if (testName) {
-      // Find the specific test
-      for (const filePath of testFiles) {
-        try {
-          const test = await loadTest(filePath);
-          if (test.name === testName) {
-            testsToRun = [{ filePath, test }];
-            break;
-          }
-        } catch (error: any) {
-          console.error(`Error loading test from ${filePath}:`, error.message);
+    if (testArg) {
+      // If argument looks like a file path (absolute or relative path with separator or ends with .spec or .js/.ts), try to resolve it
+      const looksLikePath = /[\/]/.test(testArg) || /\.(spec\.)?(js|ts|mjs|cjs)$/.test(testArg);
+      if (looksLikePath) {
+        const absPath = path.isAbsolute(testArg) ? testArg : path.join(process.cwd(), testArg);
+        if (!fs.existsSync(absPath)) {
+          console.error(`Test file not found: ${absPath}`);
+          process.exit(1);
         }
-      }
-      
-      if (testsToRun.length === 0) {
-        console.error(`Test '${testName}' not found.`);
-        process.exit(1);
+        try {
+          const test = await loadTest(absPath);
+          testsToRun = [{ filePath: absPath, test }];
+        } catch (error: any) {
+          console.error(`Error loading test from ${absPath}:`, error.message);
+          process.exit(1);
+        }
+      } else {
+        // Treat as test name; find matching test among discovered files
+        for (const filePath of testFiles) {
+          try {
+            const test = await loadTest(filePath);
+            if (test.name === testArg) {
+              testsToRun = [{ filePath, test }];
+              break;
+            }
+          } catch (error: any) {
+            console.error(`Error loading test from ${filePath}:`, error.message);
+          }
+        }
+        if (testsToRun.length === 0) {
+          console.error(`Test '${testArg}' not found.`);
+          process.exit(1);
+        }
       }
     } else {
       // Load all tests

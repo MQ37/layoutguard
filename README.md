@@ -110,23 +110,25 @@ export default test;
 ### ▶️ Running Tests
 
 ```bash
-layoutguard check [test-name]
+layoutguard check [test]
 ```
 
 This command executes visual regression tests:
 
-- If `[test-name]` is omitted, layoutguard will run all tests found.
+- If `[test]` is omitted, layoutguard will run all tests found.
+- `[test]` can be either the test name (from the test object's `name` field) or a direct path to a test file (relative or absolute).
 - Use the `--show-diff` option to automatically open the visual diff image if a test fails.
 
 ### ✅ Approving Snapshots
 
 ```bash
-layoutguard approve [test-name]
+layoutguard approve [test]
 ```
 
 This command runs the specified test(s) and replaces the existing golden snapshots with the newly generated ones:
 
-- If `[test-name]` is omitted, it will update snapshots for all found tests.
+- If `[test]` is omitted, it will update snapshots for all found tests.
+- `[test]` can be either the test name (from the test object's `name` field) or a direct path to a test file (relative or absolute).
 
 ## 📁 Directory Structure
 
