@@ -125,12 +125,12 @@ export const approveAction = async (testArg?: string, options?: ApproveOptions) 
         const slugifiedName = slugify(test.name);
         const approvedScreenshotPath = path.join(snapshotDir, `${slugifiedName}.png`);
         
-        // Take screenshot based on selector or full page directly to snapshots
+        // Take screenshot based on selector or full page (entire scrollable area) directly to snapshots
         if (test.selector) {
           const element = page.locator(test.selector);
           await element.screenshot({ path: approvedScreenshotPath });
         } else {
-          await page.screenshot({ path: approvedScreenshotPath });
+          await page.screenshot({ path: approvedScreenshotPath, fullPage: true });
         }
         
         console.log(`Baseline screenshot saved to ${approvedScreenshotPath}`);

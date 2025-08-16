@@ -146,12 +146,12 @@ export const checkAction = async (testArg?: string, options?: CheckOptions) => {
           fs.mkdirSync(testFailureDir, { recursive: true });
         }
         
-        // Take screenshot based on selector or full page
+        // Take screenshot based on selector or full page (entire scrollable area)
         if (test.selector) {
           const element = page.locator(test.selector);
           await element.screenshot({ path: newScreenshotPath });
         } else {
-          await page.screenshot({ path: newScreenshotPath });
+          await page.screenshot({ path: newScreenshotPath, fullPage: true });
         }
         
   console.log(`${symbols.info} New screenshot saved to ${newScreenshotPath}`);
